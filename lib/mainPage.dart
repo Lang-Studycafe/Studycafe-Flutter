@@ -33,22 +33,16 @@ class MainPage extends StatefulWidget {
 //State를 상속받은 클래스
 //State클래스에서 상태 관리 가능
 class _MainPageState extends State<MainPage> {
-  int bottomIndex = 0; // 상태(변수) : State에 선언한 변수를 의미, 화면전환의 기준
-
+  // 상태(변수) : State에 선언한 변수를 의미, 화면전환의 기준
+  int bottomIndex = 0;
+  //PageController 객체에 PageView의 맨 처음 보일 페이지 설정 가능
+  PageController pageController = PageController();
 
   //함수 내에 변수 또는 함수 선언은 신중히 해야함
   //=> 화면과 관련없는 속성값(상태변수) 떄문에 화면을 다시 빌드하면 비효율적이기 때문
   //build함수에서 반환하는 위젯이 화면을 구성
   @override
   Widget build(BuildContext context) {
-    Widget? view;
-    if(this.bottomIndex == 0){
-      view = Container(color: Colors.blue,);
-    }else if(this.bottomIndex == 1){
-      view = Container(color: Colors.pink,);
-    }else{
-      view = Container(color: Colors.red,);
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +51,21 @@ class _MainPageState extends State<MainPage> {
           IconButton(onPressed: () {} , icon: Icon(Icons.add_card))
         ],
       ),
-      body: view,
+      body: PageView(
+        controller: this.pageController,
+        physics: NeverScrollableScrollPhysics(), //스크롤되지 않도록 함
+        //BottomNavigationBar와 상태를 동기화
+        onPageChanged: (int index){
+            this.setState(() {
+              bottomIndex = index;
+            });
+        },
+        children: [
+          Container(margin:EdgeInsets.all(2.0), color: Colors.grey,),
+          Container(margin:EdgeInsets.all(2.0), color: Colors.blue,),
+          Container(margin:EdgeInsets.all(2.0), color: Colors.red,),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.meeting_room) , label: "스터디룸"),
@@ -75,6 +83,9 @@ class _MainPageState extends State<MainPage> {
             //'bottomIndex' 변수의 값이 변경됨 & 변경된 상태에 따라 빌드 함수 다시 호출
             bottomIndex = index;
           });
+          // TODO : setSate 안에 안넣는 이유
+          // PageView를 해당 탭에 맞는 페이지로 이동
+          this.pageController..jumpToPage(index);
         },
       ),// 화면 전환 버튼 설정하는 속성
     );
