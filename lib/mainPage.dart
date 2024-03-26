@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studycafe/studycafe2/render/mainPage/view/mainPageView1.dart';
 
 void main(){
   runApp(MyApp());
@@ -38,11 +39,13 @@ class _MainPageState extends State<MainPage> {
   //PageController 객체에 PageView의 맨 처음 보일 페이지 설정 가능
   PageController pageController = PageController();
 
+  // TODO : Controller를 것을 쓸떄 dispose함수로 시작해서 dispose 함수로 끝나야한다 (메모리해제 관련)
+
   //함수 내에 변수 또는 함수 선언은 신중히 해야함
   //=> 화면과 관련없는 속성값(상태변수) 떄문에 화면을 다시 빌드하면 비효율적이기 때문
   //build함수에서 반환하는 위젯이 화면을 구성
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // vs 바인딩 랜더링 // 런타임
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +56,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: PageView(
         controller: this.pageController,
-        physics: NeverScrollableScrollPhysics(), //스크롤되지 않도록 함
+        physics: NeverScrollableScrollPhysics(), //옆으로 스와이프 되지 않도록 함
         //BottomNavigationBar와 상태를 동기화
         onPageChanged: (int index){
             this.setState(() {
@@ -61,7 +64,7 @@ class _MainPageState extends State<MainPage> {
             });
         },
         children: [
-          Container(margin:EdgeInsets.all(2.0), color: Colors.grey,),
+          MainPageView1(),
           Container(margin:EdgeInsets.all(2.0), color: Colors.blue,),
           Container(margin:EdgeInsets.all(2.0), color: Colors.red,),
         ],
@@ -85,7 +88,7 @@ class _MainPageState extends State<MainPage> {
           });
           // TODO : setSate 안에 안넣는 이유
           // PageView를 해당 탭에 맞는 페이지로 이동
-          this.pageController..jumpToPage(index);
+          this.pageController.jumpToPage(index);
         },
       ),// 화면 전환 버튼 설정하는 속성
     );
