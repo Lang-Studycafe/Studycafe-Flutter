@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class MainPageView1 extends StatefulWidget {
@@ -12,10 +14,35 @@ class _MainPageView1State extends State<MainPageView1> {
   PageController pageController = PageController();
   BannerModel bannerModel = BannerModel(
     menus: [
-      BannerMenuModel(txt: "idx")],
+      BannerMenuModel(txt: "1"),
+      BannerMenuModel(txt: "2"),
+      BannerMenuModel(txt: "3")
+    ],
     items: [
-      BannerItemModel(img: "img", des: "des")]
+      BannerItemModel(img: "https://modo-phinf.pstatic.net/20240108_272/17046944077993rOdO_PNG/mosaJzU4J9.png?type=w556"),
+      BannerItemModel(img: "https://modo-phinf.pstatic.net/20240119_154/1705659481981Ll3FG_PNG/mosa1Nydaj.png?type=w556"),
+      BannerItemModel(img: "https://modo-phinf.pstatic.net/20240202_226/1706858283629cw3X3_PNG/mosa6Lv5x5.png?type=w720")
+    ]
   );
+
+  int pageIndex = 0;
+
+  @override
+  void initState(){
+    print("INIT");
+    run();
+    super.initState();
+  }
+
+  void run() {
+    Timer.periodic(Duration(seconds: 3), (Timer timer)
+    {
+      this.pageController.nextPage(
+          duration: Duration(seconds: 1),
+          curve: Curves.linear
+      );
+    });
+  }
 
   @override
   void dispose(){
@@ -40,9 +67,8 @@ class _MainPageView1State extends State<MainPageView1> {
             ),
           ),
           Container(
-            color: Colors.red,
+            color: Colors.blue,
           )
-
         ],
       ),
     );
@@ -52,34 +78,49 @@ class _MainPageView1State extends State<MainPageView1> {
     return Container(
       child: Column(
         children: [
+
+          Container(
+            //width: 380.0,
+            height: 90.0,
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            color: Colors.blue,
+            child: PageView.builder(
+              onPageChanged: (int index){
+                this.pageIndex = index % bannerModel.items.length;
+              },
+              controller: pageController,
+              //itemCount: model.items.length,
+              itemBuilder: (BuildContext context, int index) {
+                final pageIndex = index % bannerModel.items.length;
+                final BannerItemModel item = model.items[pageIndex];
+                final BannerItemModel(:img) = item;
+                return Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(item.img),
+                      fit: BoxFit.cover
+                    )
+                  ),
+                );
+              },
+            ),
+          ),
           Row(
             children:
-              model.menus.map<Widget>((BannerMenuModel menuModel) => TextButton(
-                onPressed: (){
-                  int index = model.menus.indexOf(menuModel);
-                  this.pageController.jumpToPage(index);
-                },
-                child: Text(menuModel.txt),
-                )).toList(),
+            model.menus.map<Widget>((BannerMenuModel menuModel) => TextButton(
+              onPressed: (){
+                int index = model.menus.indexOf(menuModel);
+                this.pageController.jumpToPage(index);
+              },
+              child: Text(menuModel.txt),
+            )).toList(),
           ),
-          Container(
-            width: 300.0,
-            height: 300.0,
-            color: Colors.red,
-            child: PageView.builder(
-              controller: pageController,
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int index) => Container(
-                child: Center(
-                  child: Text(model.items[index].des),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
   }
+
+
 }
 
 class BannerMenuModel {
@@ -90,8 +131,7 @@ class BannerMenuModel {
 
 class BannerItemModel {
   final String img;
-  final String des;
-  const BannerItemModel({required this.img, required this.des});
+  const BannerItemModel({required this.img});
 }
 
 class BannerModel {
