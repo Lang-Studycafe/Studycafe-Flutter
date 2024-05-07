@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:studycafe/studycafe2/render/mainPage/view/mainPageView1.dart';
+import 'package:studycafe/studycafe2/render/mainPage/view/mainPageView2.dart';
+import 'package:studycafe/studycafe2/render/mainPage/view/mainPageView3.dart';
+import 'package:studycafe/studycafe2/render/notificationPage/notificationPage.dart';
+
 
 void main(){
+  //웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // runApp() 호출 전 Flutter SDK 초기화
+  KakaoSdk.init(
+      nativeAppKey: '2ad79b68813e6a69a5fcbc1eee3720fb',
+      javaScriptAppKey: '170e719a8de9ef5f4bba40280d5b4030',
+  );
   runApp(MyApp());
 }
 
@@ -49,9 +62,22 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('스터디카페'),
+        title: Text(
+          '스터디카페',
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black87
+          ),
+        ),
         actions: [
-          IconButton(onPressed: () {} , icon: Icon(Icons.add_card))
+          IconButton(
+              icon: Icon(Icons.notifications),
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => NotificationPage())
+                );
+              },
+          )
         ],
       ),
       body: PageView(
@@ -65,8 +91,8 @@ class _MainPageState extends State<MainPage> {
         },
         children: [
           MainPageView1(),
-          Container(margin:EdgeInsets.all(2.0), color: Colors.blue,),
-          Container(margin:EdgeInsets.all(2.0), color: Colors.red,),
+          MainPageView2(),
+          MainPageView3(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

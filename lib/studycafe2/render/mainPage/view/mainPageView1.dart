@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:studycafe/studycafe2/render/detailPage/detailPage.dart';
+import 'package:studycafe/studycafe2/render/ticketPage/ticketPage.dart';
 
 class MainPageView1 extends StatefulWidget {
   const MainPageView1({super.key});
@@ -66,8 +69,84 @@ class _MainPageView1State extends State<MainPageView1> {
               ],
             ),
           ),
-          Container(
-            color: Colors.blue,
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                MaterialPageRoute(builder: (context) => TicketPage()),
+                );
+              },
+              child: PageView(
+                children:[
+                  Container(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.black12,
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child:
+                            Container(
+                              color: Colors.transparent,
+                              margin:EdgeInsets.only(top: 100.0),
+                              width: MediaQuery.of(context).size.width,
+                              child:
+                              Icon(
+                                Icons.add_card,
+                                color: Colors.black26,
+                                size:150.0,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children:[
+                                Container(
+                                  margin: EdgeInsets.only(top: 10.0),
+                                  color: Colors.transparent,
+                                  width: MediaQuery.of(context).size.width,
+                                  child:
+                                    Text("스티디룸 예약",
+                                    textAlign: TextAlign.center,
+                                    style:
+                                      TextStyle(
+                                        fontSize: 25.0,
+                                        color: Colors.black26,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                ),
+                                Container(
+                                  color: Colors.transparent,
+                                  child:
+                                    Text("이용권 구매는 화면을 누르시면 가능합니다",
+                                    style:
+                                      TextStyle(
+                                        color: Colors.black26,
+                                        fontWeight: FontWeight.w200
+                                      ),
+                                    ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.black12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           )
         ],
       ),
@@ -94,12 +173,21 @@ class _MainPageView1State extends State<MainPageView1> {
                 final pageIndex = index % bannerModel.items.length;
                 final BannerItemModel item = model.items[pageIndex];
                 final BannerItemModel(:img) = item;
-                return Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(item.img),
-                      fit: BoxFit.cover
-                    )
+                return GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                         builder: (BuildContext context) => DetailPage(index: pageIndex),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(item.img),
+                        fit: BoxFit.cover
+                      )
+                    ),
                   ),
                 );
               },
@@ -137,6 +225,12 @@ class BannerItemModel {
 class BannerModel {
   final List<BannerMenuModel> menus;
   final List<BannerItemModel> items;
-  const BannerModel({required this.menus, required this.items});
+  final void Function(int)? onTap;
+
+  const BannerModel({
+    required this.menus,
+    required this.items,
+    this.onTap,
+  });
 }
 
